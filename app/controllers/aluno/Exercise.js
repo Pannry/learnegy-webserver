@@ -1,10 +1,11 @@
+const verificarAluno = require('../../middlewares/VerificarAluno');
 const asyncHandler = require('../../middlewares/async');
 const ExercicioDao = require('../../infra/banco/ExercicioDao');
-const s3AwsDownload = require('../../infra/s3Download')();
+const s3AwsDownload = require('../../infra/aws/s3Download')();
 const { getDisplayName } = require('../../utils/getDisplayName');
 
 exports.download = asyncHandler(async (req, res, next) => {
-  if (req.user.tipo === 'aluno') {
+  verificarAluno(req, next, async () => {
     const entrada = [req.params.id_exercicio, req.params.file_name];
 
     const ejs = {
@@ -23,13 +24,11 @@ exports.download = asyncHandler(async (req, res, next) => {
     } else {
       res.redirect(file);
     }
-  } else {
-    next();
-  }
+  });
 });
 
 exports.openList = asyncHandler(async (req, res, next) => {
-  if (req.user.tipo === 'aluno') {
+  verificarAluno(req, next, async () => {
     const ejs = {
       user: req.user,
       page_name: req.path,
@@ -47,13 +46,11 @@ exports.openList = asyncHandler(async (req, res, next) => {
     ejs.listaInfo = result;
 
     res.render('aluno/perfil/exercicios/abrirListaAluno', ejs);
-  } else {
-    next();
-  }
+  });
 });
 
 exports.getAwnser = asyncHandler(async (req, res, next) => {
-  if (req.user.tipo === 'aluno') {
+  verificarAluno(req, next, async () => {
     // const exercicio = [{ id: req.params.id_exercicio }, { id_aluno: req.user.id }];
     const exercicio = [{ id: req.params.id_exercicio }];
     const entrada = [
@@ -99,13 +96,11 @@ exports.getAwnser = asyncHandler(async (req, res, next) => {
     }
 
     res.render('aluno/perfil/exercicios/responderExercicio', ejs);
-  } else {
-    next();
-  }
+  });
 });
 
 exports.postAwnser = asyncHandler(async (req, res, next) => {
-  if (req.user.tipo === 'aluno') {
+  verificarAluno(req, next, async () => {
     const resposta = {
       id_aluno: req.user.id,
       id_exercicios: req.params.id_exercicio,
@@ -124,7 +119,5 @@ exports.postAwnser = asyncHandler(async (req, res, next) => {
     ejs.file_name = result;
 
     res.redirect(`/turmas/abrir/listas/${ejs.sala}/${ejs.lista}`);
-  } else {
-    next();
-  }
+  });
 });

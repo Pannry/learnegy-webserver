@@ -1,10 +1,11 @@
+const verificarAluno = require('../../middlewares/VerificarAluno');
 const asyncHandler = require('../../middlewares/async');
 const DidaticoDAO = require('../../infra/banco/DidaticoDAO');
-const s3AwsDownload = require('../../infra/s3Download')();
+const s3AwsDownload = require('../../infra/aws/s3Download')();
 const { getDisplayName } = require('../../utils/getDisplayName');
 
 exports.donwloadDidactic = asyncHandler(async (req, res, next) => {
-  if (req.user.tipo === 'aluno') {
+  verificarAluno(req, next, async () => {
     const ejs = {
       user: req.user,
       page_name: req.path,
@@ -21,11 +22,11 @@ exports.donwloadDidactic = asyncHandler(async (req, res, next) => {
     } else {
       res.redirect(file);
     }
-  } else next();
+  });
 });
 
 exports.listDidactic = asyncHandler(async (req, res, next) => {
-  if (req.user.tipo === 'aluno') {
+  verificarAluno(req, next, async () => {
     const ejs = {
       user: req.user,
       page_name: req.path,
@@ -49,5 +50,5 @@ exports.listDidactic = asyncHandler(async (req, res, next) => {
     ejs.paths = result;
 
     res.render('aluno/perfil/didatico/abrirDidaticoAluno', ejs);
-  } else next();
+  });
 });

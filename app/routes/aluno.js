@@ -102,22 +102,3 @@ router
 module.exports = function (app) {
   app.use('/', router);
 };
-
-//     Turmas.js
-
-// // Exercicios.js
-
-// router
-//   .route('/turmas/abrir/listas/:id_sala/:id_lista')
-//   .get(checkAuth, Exercicios.ListaAbrir.get);
-
-// router
-//   .route('/turmas/abrir/:id_sala/:id_lista/:id_exercicio')
-//   .get(checkAuth, Exercicios.ExerciciosResponder.get)
-//   .post(checkAuth, Exercicios.ExerciciosResponder.post);
-
-// router
-//   .route('/exercicios/download/:id_exercicio/:file_name')
-//   .get(checkAuth, Exercicios.ExerciciosDownloadAluno.get);
-
-// // didatico.js

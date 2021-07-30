@@ -1,3 +1,4 @@
+const verificarAluno = require('../../middlewares/VerificarAluno');
 const asyncHandler = require('../../middlewares/async');
 const TurmaDao = require('../../infra/banco/TurmaDao');
 const UsuarioDAO = require('../../infra/banco/UsuarioDAO');
@@ -5,7 +6,7 @@ const ExercicioDao = require('../../infra/banco/ExercicioDao');
 const DidaticoDAO = require('../../infra/banco/DidaticoDAO');
 
 exports.classrooms = asyncHandler(async (req, res, next) => {
-  if (req.user.tipo === 'aluno') {
+  verificarAluno(req, next, async () => {
     const ejs = {
       user: req.user,
       page_name: req.path,
@@ -17,13 +18,11 @@ exports.classrooms = asyncHandler(async (req, res, next) => {
 
     ejs.listaSalaAluno = result;
     res.render('aluno/perfil/turmas/minhasTurmas', ejs);
-  } else {
-    next();
-  }
+  });
 });
 
 exports.findClassrooms = asyncHandler(async (req, res, next) => {
-  if (req.user.tipo === 'aluno') {
+  verificarAluno(req, next, async () => {
     const ejs = {
       user: req.user,
       page_name: req.path,
@@ -35,13 +34,11 @@ exports.findClassrooms = asyncHandler(async (req, res, next) => {
 
     ejs.listaSalaProfessor = result;
     res.render('aluno/perfil/turmas/selecionarProfessor', ejs);
-  } else {
-    next();
-  }
+  });
 });
 
 exports.openClassrooms = asyncHandler(async (req, res, next) => {
-  if (req.user.tipo === 'aluno') {
+  verificarAluno(req, next, async () => {
     const entrada = [{ id_aluno: req.user.id }, { id_sala: req.params.id }];
 
     const ejs = {
@@ -70,13 +67,11 @@ exports.openClassrooms = asyncHandler(async (req, res, next) => {
     ejs.didatico = getDidaticList;
 
     res.render('aluno/perfil/turmas/abrirTurma', ejs);
-  } else {
-    next();
-  }
+  });
 });
 
 exports.getIntroduceClassrooms = asyncHandler(async (req, res, next) => {
-  if (req.user.tipo === 'aluno') {
+  verificarAluno(req, next, async () => {
     const entrada = {
       id_professor: req.query.idProf,
       cod_sala: req.query.codSala,
@@ -93,13 +88,11 @@ exports.getIntroduceClassrooms = asyncHandler(async (req, res, next) => {
     [ejs.detalhesSala] = result;
 
     res.render('aluno/perfil/turmas/professorTurmas', ejs);
-  } else {
-    next();
-  }
+  });
 });
 
 exports.postIntroduceClassrooms = asyncHandler(async (req, res, next) => {
-  if (req.user.tipo === 'aluno') {
+  verificarAluno(req, next, async () => {
     const entrada = {
       id_sala: Object.keys(req.body)[0],
       id_aluno: req.user.id,
@@ -108,7 +101,5 @@ exports.postIntroduceClassrooms = asyncHandler(async (req, res, next) => {
     const classrooms = new TurmaDao();
     await classrooms.applyToEnter(entrada);
     res.redirect('/turmas');
-  } else {
-    next();
-  }
+  });
 });

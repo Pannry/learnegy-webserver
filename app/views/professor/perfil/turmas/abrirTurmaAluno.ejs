@@ -1,114 +1,114 @@
 <% include ../../../partials/professor-top %>
-<div class="card-body">
-  <h3> Turma:
-    <%= infoProfessor[0].nome%>,
-    <%= infoProfessor[0].semestre%>
-  </h3>
-  <hr>
+  <div class="card-body">
+    <h3> Turma:
+      <%= infoProfessor[0].nome%>,
+        <%= infoProfessor[0].semestre%>
+    </h3>
+    <hr>
 
-  <!-- breadcrumb -->
-  <nav aria-label="breadcrumb row">
-    <ol class="breadcrumb col-md-10">
-      <li class="breadcrumb-item"><a href="/professor/turmas">Turmas</a></li>
-      <li class="breadcrumb-item active"><a href="#">Área de Interação</a></li>
-    </ol>
-  </nav>
+    <!-- breadcrumb -->
+    <nav aria-label="breadcrumb row">
+      <ol class="breadcrumb col-md-10">
+        <li class="breadcrumb-item"><a href="/professor/turmas">Turmas</a></li>
+        <li class="breadcrumb-item active"><a href="#">Área de Interação</a></li>
+      </ol>
+    </nav>
 
-  <div class="card">
-    <div class="card-header">
-      <ul class="nav nav-tabs card-header-tabs">
-        <li class="nav-item">
-          <a class="nav-link" href="/professor/turma/abrir/<%=idSala%>/professor">Alunos Matriculados</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link active" href="/professor/turma/abrir/<%=idSala%>/aluno">Área de Interação</a>
-        </li>
-      </ul>
-    </div>
-    <div class="card-body">
+    <div class="card">
+      <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs">
+          <li class="nav-item">
+            <a class="nav-link" href="/professor/turma/abrir/<%=idSala%>/professor">Alunos Matriculados</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="/professor/turma/abrir/<%=idSala%>/aluno">Área de Interação</a>
+          </li>
+        </ul>
+      </div>
+      <div class="card-body">
 
-      <div class="row">
-        <div class="col-md-4 col-sm-12">
-          <h4 class="card-title">Lista de exercícios</h4>
-          <a href="/professor/turma/abrir/<%=idSala%>/aluno/incluirlista"
-            class="btn btn-outline-secondary col-md-5 col-sm-12">Lista</a>
-        </div>
-        <div class="col-md-4 col-sm-12">
-          <h4 class="card-title">Lista de materiais didáticos</h4>
-          <a href="/professor/turma/abrir/<%=idSala%>/aluno/incluirDidatico"
-            class="btn btn-outline-secondary col-md-5 col-sm-12">Lista</a>
-        </div>
-        <!-- <div class="col-md-4 col-sm-12">
+        <div class="row">
+          <div class="col-md-4 col-sm-12">
+            <h4 class="card-title">Lista de exercícios</h4>
+            <a href="/professor/turma/abrir/<%=idSala%>/aluno/incluirlista"
+              class="btn btn-outline-secondary col-md-5 col-sm-12">Lista</a>
+          </div>
+          <div class="col-md-4 col-sm-12">
+            <h4 class="card-title">Lista de materiais didáticos</h4>
+            <a href="/professor/turma/abrir/<%=idSala%>/aluno/incluirDidatico"
+              class="btn btn-outline-secondary col-md-5 col-sm-12">Lista</a>
+          </div>
+          <!-- <div class="col-md-4 col-sm-12">
           <h4 class="card-title">Download do programa</h4>
           <a href="#" class="btn btn-outline-secondary col-md-5">Projel</a>
         </div> -->
-      </div>
-
-      <br><br>
-
-      <form class="form-group" action="/professor/turma/abrir/<%=idSala%>/aluno" method="post">
-        <h4 class="card-title" for="campoComentario"> Adicionar Comentário: </h4>
-        <textarea class="form-control col-md-10" id="campoComentario" name="comentario"
-          rows="6"><%= infoProfessor[0].comentario%></textarea>
-        <br>
-        <input class="btn btn-outline-secondary col-md-2 col-sm-12" type="submit" value="Salvar">
-      </form>
-
-      <br><br>
-      <!-- Listas de exercícios -->
-      <div class="row">
-        <h4 class="card-title col-md-5">Listas de exercícios</h4>
-      </div>
-
-      <ul class="list-group list-group-flush">
-        <% if ( lista.length === 0 ) { %>
-        <h5>Nenhuma lista disponivel, por favor, adicione alguma.</h5>
-        <% } else { %>
-        <div class="card">
-          <% for (var i = 0; i < lista.length; i++) { %>
-
-          <li class="list-group-item">
-            <div class="row">
-              <div class="col-3">
-                <%= lista[i].titulo%>
-              </div>
-            </div>
-          </li>
-
-          <% } %>
         </div>
-        <% } %>
-      </ul>
 
-      <br><br>
-      <!-- Material didático-->
-      <div class="row">
-        <h4 class="card-title col-md-5">Materiais didáticos</h4>
-      </div>
+        <br><br>
 
-      <ul class="list-group list-group-flush">
-        <% if ( didatico.length === 0 ) { %>
-        <h5>Nenhuma material didático disponivel, por favor, adicione algum.</h5>
-        <% } else { %>
-        <div class="card">
-          <% for (var i = 0; i < didatico.length; i++) { %>
+        <form class="form-group" action="/professor/turma/abrir/<%=idSala%>/aluno" method="post">
+          <h4 class="card-title" for="campoComentario"> Adicionar Comentário: </h4>
+          <textarea class="form-control col-md-10" id="campoComentario" name="comentario"
+            rows="6"><%= infoProfessor[0].comentario%></textarea>
+          <br>
+          <input class="btn btn-outline-secondary col-md-2 col-sm-12" type="submit" value="Salvar">
+        </form>
 
-          <li class="list-group-item">
-            <div class="row">
-              <div class="col-3">
-                <%= didatico[i].titulo%>
-              </div>
-            </div>
-          </li>
-
-          <% } %>
+        <br><br>
+        <!-- Listas de exercícios -->
+        <div class="row">
+          <h4 class="card-title col-md-5">Listas de exercícios</h4>
         </div>
-        <% } %>
-      </ul>
+
+        <ul class="list-group list-group-flush">
+          <% if ( lista.length===0 ) { %>
+            <h5>Nenhuma lista disponivel, por favor, adicione alguma.</h5>
+            <% } else { %>
+              <div class="card">
+                <% for (var i=0; i < lista.length; i++) { %>
+
+                  <li class="list-group-item">
+                    <div class="row">
+                      <div class="col">
+                        <%= lista[i].titulo%>
+                      </div>
+                    </div>
+                  </li>
+
+                  <% } %>
+              </div>
+              <% } %>
+        </ul>
+
+        <br><br>
+        <!-- Material didático-->
+        <div class="row">
+          <h4 class="card-title col-md-5">Materiais didáticos</h4>
+        </div>
+
+        <ul class="list-group list-group-flush">
+          <% if ( didatico.length===0 ) { %>
+            <h5>Nenhuma material didático disponivel, por favor, adicione alguma.</h5>
+            <% } else { %>
+              <div class="card">
+                <% for (var i=0; i < didatico.length; i++) { %>
+
+                  <li class="list-group-item">
+                    <div class="row">
+                      <div class="col">
+                        <%= didatico[i].titulo%>
+                      </div>
+                    </div>
+                  </li>
+
+                  <% } %>
+              </div>
+              <% } %>
+        </ul>
 
 
+      </div>
     </div>
-  </div>
 
-</div>
-<% include ../../../partials/professor-bottom %>
+  </div>
+  <% include ../../../partials/professor-bottom %>

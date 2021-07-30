@@ -7,11 +7,9 @@
     "devdb": "nodemon --inspect server.js",
     "dev": "nodemon server.js",
     "lint": "node node_modules/ESLint/bin/eslint app/**/*.js",
-    "m:reset": "db-migrate db:drop projel -e reset && db-migrate db:create projel -e reset",
-    "m:setup": "npm run m:reset && db-migrate up",
-    "m:resetprod": "db-migrate db:drop projel -e prod && db-migrate db:create projel -e prodsetup",
-    "m:prod": "npm run m:resetprod && db-migrate up -e prod",
-    "start": "node server.js"
+    "start": "node server.js",
+    "m:h-up": "db-migrate up -e prod",
+    "m:h-reset": "db-migrate reset -e prod"
   },
   "engines": {
     "node": "10.17.0",

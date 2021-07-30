@@ -1,103 +1,104 @@
 <% include ../../../partials/professor-top %>
-<div class="card-body">
+  <div class="card-body">
 
-  <h3> Turmas </h3>
-  <hr>
+    <h3> Turmas </h3>
+    <hr>
 
-  <!-- breadcrumb -->
-  <nav aria-label="breadcrumb row">
-    <ol class="breadcrumb col-md-10">
-      <li class="breadcrumb-item active"><a href="#">Turmas</a></li>
-    </ol>
-  </nav>
+    <!-- breadcrumb -->
+    <nav aria-label="breadcrumb row">
+      <ol class="breadcrumb col-md-10">
+        <li class="breadcrumb-item active"><a href="#">Turmas</a></li>
+      </ol>
+    </nav>
 
 
-  <div class="row">
-    <div class="col-md-1">
-      <a class="btn btn-success " href="/professor/turmas/criar">Criar</a>
+    <div class="row">
+      <div class="col-md-1">
+        <a class="btn btn-success " href="/professor/turmas/criar">Criar</a>
+      </div>
     </div>
-  </div>
-  <br>
+    <br>
 
-  <div class="row ml-1">
-    <label for="selecionarTurma">Selecione uma turma: </label>
-  </div>
+    <div class="row ml-1">
+      <label for="selecionarTurma">Selecione uma turma: </label>
+    </div>
 
-  <div class="form-group">
-    <div class="list-group">
+    <div class="form-group">
+      <div class="list-group">
 
-      <li class="list-group-item col-md-10 col-sm-12 ">
-        <div class="row">
-          <div class="col-4">
-            <b>Turma</b>
+        <li class="list-group-item col-md-10 col-sm-12 ">
+          <div class="row">
+            <div class="col-4">
+              <b>Turma</b>
+            </div>
+
+            <div class="col-4">
+              <b>código da turma</b>
+            </div>
+
           </div>
+        </li>
 
-          <div class="col-4">
-            <b>código da turma</b>
-          </div>
+        <!-- elemento 1 -->
+        <% for (var i=0; i < Salas.length; i++){%>
+          <li class="list-group-item col-md-10 col-sm-12 " value="<%=Salas[i].id%>">
 
-        </div>
-      </li>
+            <div class="row">
+              <div class="col-4">
+                <%=Salas[i].nome%>,
+                  <%=Salas[i].semestre%>
+              </div>
 
-      <!-- elemento 1 -->
-      <% for (var i = 0; i < listaSala.length; i++){%>
-      <li class="list-group-item col-md-10 col-sm-12 " value="<%=listaSala[i].id%>">
+              <div class="col-3">
+                <%=Salas[i].cod_sala%>
+              </div>
 
-        <div class="row">
-          <div class="col-4">
-            <%=listaSala[i].nome%>,
-            <%=listaSala[i].semestre%>
-          </div>
+              <div class="col-5">
+                <a href="/professor/turma/abrir/<%=Salas[i].id%>/professor">
+                  <button type="submit" class="btn btn-secondary btn-sm">Abrir</button>
+                </a>
 
-          <div class="col-3">
-            <%=listaSala[i].cod_sala%>
-          </div>
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#modalDelete"
+                  onclick="getSalaValues(<%=Salas[i].id %>)">
+                  Excluir
+                </button>
+              </div>
+            </div>
 
-          <div class="col-5">
-            <a href="/professor/turma/abrir/<%=listaSala[i].id%>/professor">
-              <button type="submit" class="btn btn-secondary btn-sm">Abrir</button>
-            </a>
+          </li>
+          <%}%>
 
-            <!-- Button trigger modal -->
-            <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#modalDelete" onclick="getSalaValues(<%=listaSala[i].id %>)">
-              Excluir
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="modalDelete" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+      aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalCenterTitle">Você deseja realmente excluir?</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
             </button>
           </div>
-        </div>
-
-      </li>
-      <%}%>
-
-    </div>
-  </div>
-
-  <!-- Modal -->
-  <div class="modal fade" id="modalDelete" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
-    aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalCenterTitle">Você deseja realmente excluir?</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-          <a id="useIdDelete">
-            <button type="submit" class="btn btn-danger">Excluir</button>
-          </a>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+            <a id="useIdDelete">
+              <button type="submit" class="btn btn-danger">Excluir</button>
+            </a>
+          </div>
         </div>
       </div>
     </div>
+
+    <script>
+      function getSalaValues(id) {
+        href = "/professor/turmas/excluir/" + id;
+        document.getElementById('useIdDelete').setAttribute('href', href);
+      }
+    </script>
+
   </div>
-
-  <script>
-    function getSalaValues(id) {
-      href = "/professor/turmas/excluir/" + id;
-      document.getElementById('useIdDelete').setAttribute('href', href);
-    }
-  </script>
-
-</div>
-<% include ../../../partials/professor-bottom %>
+  <% include ../../../partials/professor-bottom %>

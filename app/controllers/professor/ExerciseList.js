@@ -1,10 +1,11 @@
+const verificarProfessor = require('../../middlewares/VerificarProfessor');
 const asyncHandler = require('../../middlewares/async');
 const ListDao = require('../../infra/banco/ListaDao');
 const ExercicioDao = require('../../infra/banco/ExercicioDao');
 
 // @Turmas
 exports.getLists = asyncHandler(async (req, res, next) => {
-  if (req.user.tipo === 'professor') {
+  verificarProfessor(req, next, async () => {
     const ejs = {
       user: req.user,
       page_name: req.path,
@@ -16,13 +17,11 @@ exports.getLists = asyncHandler(async (req, res, next) => {
 
     ejs.lista = result;
     res.render('professor/perfil/exercicios/lista', ejs);
-  } else {
-    next();
-  }
+  });
 });
 
 exports.openList = asyncHandler(async (req, res, next) => {
-  if (req.user.tipo === 'professor') {
+  verificarProfessor(req, next, async () => {
     const listInfo = [
       { id_professor: req.user.id },
       { id: req.params.id },
@@ -43,13 +42,11 @@ exports.openList = asyncHandler(async (req, res, next) => {
       ejs.lista = result;
       res.render('professor/perfil/exercicios/abrirListaInfo', ejs);
     }
-  } else {
-    next();
-  }
+  });
 });
 
 exports.showQuestions = asyncHandler(async (req, res, next) => {
-  if (req.user.tipo === 'professor') {
+  verificarProfessor(req, next, async () => {
     const ejs = {
       user: req.user,
       page_name: req.path,
@@ -62,13 +59,11 @@ exports.showQuestions = asyncHandler(async (req, res, next) => {
 
     ejs.exercicios = result;
     res.render('professor/perfil/exercicios/abrirListaExercicios', ejs);
-  } else {
-    next();
-  }
+  });
 });
 
 exports.getCreateList = asyncHandler(async (req, res, next) => {
-  if (req.user.tipo === 'professor') {
+  verificarProfessor(req, next, async () => {
     const ejs = {
       user: req.user,
       page_name: req.path,
@@ -76,13 +71,11 @@ exports.getCreateList = asyncHandler(async (req, res, next) => {
     };
 
     res.render('professor/perfil/exercicios/criarLista', ejs);
-  } else {
-    next();
-  }
+  });
 });
 
 exports.postCreateList = asyncHandler(async (req, res, next) => {
-  if (req.user.tipo === 'professor') {
+  verificarProfessor(req, next, async () => {
     const entrada = {
       id_professor: req.user.id,
       titulo: req.body.titulo,
@@ -93,23 +86,19 @@ exports.postCreateList = asyncHandler(async (req, res, next) => {
     const list = new ListDao();
     const result = await list.create(entrada);
     res.redirect(`/professor/exercicios/lista/abrir/${result.insertId}/editar`);
-  } else {
-    next();
-  }
+  });
 });
 
 exports.deleteList = asyncHandler(async (req, res, next) => {
-  if (req.user.tipo === 'professor') {
+  verificarProfessor(req, next, async () => {
     const list = new ListDao();
     await list.delete({ id: req.params.id });
     res.redirect('/professor/exercicios/lista');
-  } else {
-    next();
-  }
+  });
 });
 
 exports.getAddQuestionsInList = asyncHandler(async (req, res, next) => {
-  if (req.user.tipo === 'professor') {
+  verificarProfessor(req, next, async () => {
     const ejs = {
       user: req.user,
       user_id: req.user.id,
@@ -123,13 +112,11 @@ exports.getAddQuestionsInList = asyncHandler(async (req, res, next) => {
 
     ejs.lista = result;
     res.render('professor/perfil/exercicios/adicionarExercicios', ejs);
-  } else {
-    next();
-  }
+  });
 });
 
 exports.postAddQuestionsInList = asyncHandler(async (req, res, next) => {
-  if (req.user.tipo === 'professor') {
+  verificarProfessor(req, next, async () => {
     const checkbox = req.body.options;
     let questoes = [];
     if (!Array.isArray(checkbox)) questoes = Array.of(checkbox);
@@ -153,7 +140,5 @@ exports.postAddQuestionsInList = asyncHandler(async (req, res, next) => {
       await Promise.all(promiseList);
     }
     res.redirect('/professor/exercicios/lista');
-  } else {
-    next();
-  }
+  });
 });

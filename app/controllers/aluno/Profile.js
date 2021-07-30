@@ -1,4 +1,5 @@
 const asyncHandler = require('../../middlewares/async');
+const verificarAluno = require('../../middlewares/VerificarAluno');
 const InstituicaoDAO = require('../../infra/banco/InstituicaoDAO');
 const passport = require('passport');
 
@@ -37,23 +38,23 @@ exports.getLogin = asyncHandler(async (req, res) => {
 
 // @Profile
 exports.getProfile = asyncHandler(async (req, res, next) => {
-  if (req.user.tipo === 'aluno') {
+  verificarAluno(req, next, async () => {
     const ejs = {
       user: req.user,
       page_name: req.path,
       accountType: req.user.tipo,
     };
     res.render('aluno/perfil/perfil', ejs);
-  } else next();
+  });
 });
 
 exports.getUpdateProfile = asyncHandler(async (req, res, next) => {
-  if (req.user.tipo === 'aluno') {
+  verificarAluno(req, next, async () => {
     const ejs = {
       user: req.user,
       page_name: req.path,
       accountType: req.user.tipo,
     };
     res.render('aluno/perfil/atualizarPerfil', ejs);
-  } else next();
+  });
 });

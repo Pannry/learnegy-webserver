@@ -1,8 +1,9 @@
+const verificarProfessor = require('../../middlewares/VerificarProfessor');
 const asyncHandler = require('../../middlewares/async');
 const NotasDAO = require('../../infra/banco/NotasDAO');
 
 exports.professorGET = asyncHandler(async (req, res, next) => {
-  if (req.user.tipo === 'professor') {
+  verificarProfessor(req, next, async () => {
     const entrada = {
       id_sala: req.params.id_sala,
       id_aluno: req.params.id_aluno,
@@ -51,13 +52,11 @@ exports.professorGET = asyncHandler(async (req, res, next) => {
     ejs.notas = NotasDAO2;
 
     res.render('professor/perfil/notas/AbrirNotasAluno', ejs);
-  } else {
-    next();
-  }
+  });
 });
 
 exports.post = asyncHandler(async (req, res, next) => {
-  if (req.user.tipo === 'professor') {
+  verificarProfessor(req, next, async () => {
     const entrada = {
       id_sala: req.params.id_sala,
       id_aluno: req.params.id_aluno,
@@ -78,13 +77,11 @@ exports.post = asyncHandler(async (req, res, next) => {
     const notas = new NotasDAO();
     await notas.update(entrada);
     res.redirect(`/professor/turma/abrir/${ejs.sala}/professor/${ejs.aluno}`);
-  } else {
-    next();
-  }
+  });
 });
 
 exports.verRespostas = asyncHandler(async (req, res, next) => {
-  if (req.user.tipo === 'professor') {
+  verificarProfessor(req, next, async () => {
     const entrada = {
       id_aluno: req.params.id_aluno,
       id_lista: req.params.id_lista,
@@ -103,7 +100,5 @@ exports.verRespostas = asyncHandler(async (req, res, next) => {
     const listas = await notas.showAwnser(entrada);
     ejs.respostas = listas;
     res.render('professor/perfil/notas/mostrarExerciciosLista', ejs);
-  } else {
-    next();
-  }
+  });
 });

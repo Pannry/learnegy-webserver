@@ -1,3 +1,4 @@
+const verificarProfessor = require('../../middlewares/VerificarProfessor');
 const asyncHandler = require('../../middlewares/async');
 const InstituicaoDAO = require('../../infra/banco/InstituicaoDAO');
 const passport = require('passport');
@@ -40,25 +41,25 @@ exports.postLogin = passport.authenticate('local-login-professor', {
 
 // @profile
 exports.getProfile = asyncHandler(async (req, res, next) => {
-  if (req.user.tipo === 'professor') {
+  verificarProfessor(req, next, () => {
     const params = {
       user: req.user,
       page_name: req.path,
       accountType: req.user.tipo,
     };
     res.render('professor/perfil/perfil', params);
-  } else next();
+  });
 });
 
 // @profileUpdate
 exports.getUpdateProfile = asyncHandler(async (req, res, next) => {
-  if (req.user.tipo === 'professor') {
+  verificarProfessor(req, next, () => {
     const params = {
       user: req.user,
       page_name: req.path,
       accountType: req.user.tipo,
     };
     res.render('professor/perfil/atualizarPerfil', params);
-  } else next();
+  });
 });
 

@@ -1,12 +1,6 @@
 {
   "sql-file": true,
   "defaultEnv": "dev",
-  "reset": {
-    "driver": "mysql",
-    "host": "localhost",
-    "user": "root",
-    "password": "root"
-  },
   "dev": {
     "multipleStatements": true,
     "driver": "mysql",
@@ -29,19 +23,6 @@
     },
     "database": {
       "ENV": "DB_DATABASE"
-    }
-  },
-  "prodsetup": {
-    "multipleStatements": true,
-    "driver": "mysql",
-    "host": {
-      "ENV": "DB_HOST"
-    },
-    "user": {
-      "ENV": "DB_USER"
-    },
-    "password": {
-      "ENV": "DB_PASSWORD"
     }
   }
 }

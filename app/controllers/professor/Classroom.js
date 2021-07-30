@@ -1,67 +1,50 @@
+const verificarProfessor = require('../../middlewares/VerificarProfessor');
 const asyncHandler = require('../../middlewares/async');
+const Professor = require('../../models/professor');
+const Sala = require('../../models/Sala');
+const ListaDeTurmas = require('../../models/ListaDeSalas');
 const TurmaDao = require('../../infra/banco/TurmaDao');
 const ExercicioDao = require('../../infra/banco/ExercicioDao');
 const DidaticoDAO = require('../../infra/banco/DidaticoDAO');
 
 // @Turmas
 exports.classrooms = asyncHandler(async (req, res, next) => {
-  if (req.user.tipo === 'professor') {
-    const entrada = {
-      id_professor: req.user.id,
-    };
-
-    const ejs = {
-      user: req.user,
-      page_name: req.path,
-      accountType: req.user.tipo,
-    };
-
+  verificarProfessor(req, next, async () => {
+    const professor = new Professor(req);
     const classrooms = new TurmaDao();
-    const result = await classrooms.find(entrada);
 
+    const salas = await classrooms.find({ id_professor: professor.id_professor });
+    const listaDeSalas = new ListaDeTurmas(salas);
 
-    ejs.listaSala = result;
-    // TODO: será que não precisa apenas passar 'result'?
-    res.render('professor/perfil/turmas/turmas', ejs);
-  } else {
-    next();
-  }
+    res.render('professor/perfil/turmas/turmas', { Salas: listaDeSalas.Salas });
+  });
 });
 
 exports.getCreateClassroom = asyncHandler(async (req, res, next) => {
-  if (req.user.tipo === 'professor') {
-    const ejs = {
-      user: req.user,
-      page_name: req.path,
-      accountType: req.user.tipo,
-    };
-
-    res.render('professor/perfil/turmas/criarTurma', ejs);
-  } else {
-    next();
-  }
+  verificarProfessor(req, next, async () => {
+    const professor = new Professor(req);
+    res.render('professor/perfil/turmas/criarTurma', professor);
+  });
 });
 
 exports.postCreateClassroom = asyncHandler(async (req, res, next) => {
-  if (req.user.tipo === 'professor') {
-    const entrada = {
-      nome: req.body.nome,
-      semestre: req.body.semestre,
-      id_professor: req.user.id,
-      comentario: '',
-      cod_sala: Date.now().toString().substring(3, 13),
-    };
-
+  verificarProfessor(req, next, async () => {
     const classrooms = new TurmaDao();
-    await classrooms.create(entrada);
+    const professor = new Professor(req);
+    const turma = new Sala(req.body);
+
+    turma.setCode(Date.now().toString().substring(3, 13));
+    turma.setComment('');
+    const a = turma.InformacoesSala(professor.getId());
+
+    await classrooms.create(a);
+
     res.redirect('/professor/turmas');
-  } else {
-    next();
-  }
+  });
 });
 
 exports.getOpenClassroomStudentList = asyncHandler(async (req, res, next) => {
-  if (req.user.tipo === 'professor') {
+  verificarProfessor(req, next, async () => {
     const ejs = {
       user: req.user,
       page_name: req.path,
@@ -86,26 +69,22 @@ exports.getOpenClassroomStudentList = asyncHandler(async (req, res, next) => {
         res.render('erro/403', ejs);
       }
     }
-  } else {
-    next();
-  }
+  });
 });
 
 exports.IncludeStudentInClassroom = asyncHandler(async (req, res, next) => {
-  if (req.user.tipo === 'professor') {
+  verificarProfessor(req, next, async () => {
     const entrada = [{ id_sala: req.params.id }, { id_aluno: Object.keys(req.body)[0] }];
 
     const classroom = new TurmaDao();
     await classroom.includeStudent(entrada);
 
     res.redirect(`/professor/turma/abrir/${entrada[0].id_sala}/professor`);
-  } else {
-    next();
-  }
+  });
 });
 
 exports.getOpenClassroomDetails = asyncHandler(async (req, res, next) => {
-  if (req.user.tipo === 'professor') {
+  verificarProfessor(req, next, async () => {
     const ejs = {
       user: req.user,
       page_name: req.path,
@@ -135,13 +114,11 @@ exports.getOpenClassroomDetails = asyncHandler(async (req, res, next) => {
         res.render('erro/403', ejs);
       }
     }
-  } else {
-    next();
-  }
+  });
 });
 
 exports.postCommentInDetails = asyncHandler(async (req, res, next) => {
-  if (req.user.tipo === 'professor') {
+  verificarProfessor(req, next, async () => {
     const entrada = {
       id: {
         id: req.params.id,
@@ -154,13 +131,11 @@ exports.postCommentInDetails = asyncHandler(async (req, res, next) => {
     const classrooms = new TurmaDao();
     await classrooms.editComment(entrada);
     res.redirect(`/professor/turma/abrir/${entrada.id.id}/aluno`);
-  } else {
-    next();
-  }
+  });
 });
 
 exports.getIncludeExerciseList = asyncHandler(async (req, res, next) => {
-  if (req.user.tipo === 'professor') {
+  verificarProfessor(req, next, async () => {
     const ejs = {
       user: req.user,
       page_name: req.path,
@@ -171,13 +146,11 @@ exports.getIncludeExerciseList = asyncHandler(async (req, res, next) => {
     const exercise = new ExercicioDao();
     ejs.lista = await exercise.listInfo({ id_professor: req.user.id });
     res.render('professor/perfil/turmas/listarListaParaAdicionar', ejs);
-  } else {
-    next();
-  }
+  });
 });
 
 exports.postIncludeExerciseList = asyncHandler(async (req, res, next) => {
-  if (req.user.tipo === 'professor') {
+  verificarProfessor(req, next, async () => {
     const checkbox = req.body.options;
     let listas = [];
 
@@ -202,13 +175,11 @@ exports.postIncludeExerciseList = asyncHandler(async (req, res, next) => {
     }
 
     res.redirect(`/professor/turma/abrir/${req.params.id}/aluno`);
-  } else {
-    next();
-  }
+  });
 });
 
 exports.getIncludeDidacticList = asyncHandler(async (req, res, next) => {
-  if (req.user.tipo === 'professor') {
+  verificarProfessor(req, next, async () => {
     const ejs = {
       user: req.user,
       page_name: req.path,
@@ -219,13 +190,11 @@ exports.getIncludeDidacticList = asyncHandler(async (req, res, next) => {
     const didactic = new DidaticoDAO();
     ejs.lista = await didactic.list({ id_professor: req.user.id });
     res.render('professor/perfil/turmas/listarDidaticoParaAdicionar', ejs);
-  } else {
-    next();
-  }
+  });
 });
 
 exports.postIncludeDidacticList = asyncHandler(async (req, res, next) => {
-  if (req.user.tipo === 'professor') {
+  verificarProfessor(req, next, async () => {
     const checkbox = req.body.options;
     let materiais = [];
     if (!Array.isArray(checkbox)) materiais = Array.of(checkbox);
@@ -248,17 +217,13 @@ exports.postIncludeDidacticList = asyncHandler(async (req, res, next) => {
       await Promise.all(promiseList);
     }
     res.redirect(`/professor/turma/abrir/${req.params.id}/aluno`);
-  } else {
-    next();
-  }
+  });
 });
 
 exports.deleteClassroom = asyncHandler(async (req, res, next) => {
-  if (req.user.tipo === 'professor') {
+  verificarProfessor(req, next, async () => {
     const classroom = new TurmaDao();
     await classroom.delete({ id: req.params.id });
     res.redirect('/professor/turmas');
-  } else {
-    next();
-  }
+  });
 });

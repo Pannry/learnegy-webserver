@@ -1,14 +1,15 @@
+const verificarProfessor = require('../../middlewares/VerificarProfessor');
 const asyncHandler = require('../../middlewares/async');
 const ExercicioDao = require('../../infra/banco/ExercicioDao');
-const s3AwsUpload = require('../../infra/s3Upload')();
-const s3AwsDownload = require('../../infra/s3Download')();
-const s3AwsDelete = require('../../infra/s3Delete')();
+const s3AwsUpload = require('../../infra/aws/s3Upload')();
+const s3AwsDownload = require('../../infra/aws/s3Download')();
+const s3AwsDelete = require('../../infra/aws/s3Delete')();
 const { getDisplayName } = require('../../utils/getDisplayName');
 const fs = require('fs');
 
 // @Turmas
 exports.getExercises = asyncHandler(async (req, res, next) => {
-  if (req.user.tipo === 'professor') {
+  verificarProfessor(req, next, async () => {
     const entrada = {
       id_professor: req.user.id,
     };
@@ -25,26 +26,22 @@ exports.getExercises = asyncHandler(async (req, res, next) => {
     ejs.listaExercicios = result;
 
     res.render('professor/perfil/exercicios/exercicios', ejs);
-  } else {
-    next();
-  }
+  });
 });
 
 exports.getCreateExercises = asyncHandler(async (req, res, next) => {
-  if (req.user.tipo === 'professor') {
+  verificarProfessor(req, next, async () => {
     const ejs = {
       user: req.user,
       page_name: req.path,
       accountType: req.user.tipo,
     };
     res.render('professor/perfil/exercicios/criarExercicios', ejs);
-  } else {
-    next();
-  }
+  });
 });
 
 exports.postCreateExercises = asyncHandler(async (req, res, next) => {
-  if (req.user.tipo === 'professor') {
+  verificarProfessor(req, next, async () => {
     const exerciseDescription = {
       id_professor: req.user.id,
       titulo: req.body.titulo,
@@ -71,13 +68,11 @@ exports.postCreateExercises = asyncHandler(async (req, res, next) => {
     await Promise.all(promiseList);
 
     res.redirect('/professor/exercicios');
-  } else {
-    next();
-  }
+  });
 });
 
 exports.openExercise = asyncHandler(async (req, res, next) => {
-  if (req.user.tipo === 'professor') {
+  verificarProfessor(req, next, async () => {
     const teacherData = [{ id: req.params.id }, { id_professor: req.user.id }];
 
     const ejs = {
@@ -102,13 +97,11 @@ exports.openExercise = asyncHandler(async (req, res, next) => {
       ejs.paths = fileNames;
       res.render('professor/perfil/exercicios/abrirExercicio', ejs);
     }
-  } else {
-    next();
-  }
+  });
 });
 
 exports.downloadExercice = asyncHandler(async (req, res, next) => {
-  if (req.user.tipo === 'professor') {
+  verificarProfessor(req, next, async () => {
     const entrada = [req.params.id_exercicio, req.params.file_name];
 
     const ejs = {
@@ -127,13 +120,11 @@ exports.downloadExercice = asyncHandler(async (req, res, next) => {
     } else {
       res.redirect(file);
     }
-  } else {
-    next();
-  }
+  });
 });
 
 exports.deleteExercise = asyncHandler(async (req, res, next) => {
-  if (req.user.tipo === 'professor') {
+  verificarProfessor(req, next, async () => {
     const entrada = { id: req.params.id };
 
     const fileNames = new ExercicioDao();
@@ -152,7 +143,5 @@ exports.deleteExercise = asyncHandler(async (req, res, next) => {
     await exercise.delete(entrada);
 
     res.redirect('/professor/exercicios');
-  } else {
-    next();
-  }
+  });
 });

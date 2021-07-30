@@ -1,14 +1,15 @@
+const verificarProfessor = require('../../middlewares/VerificarProfessor');
 const asyncHandler = require('../../middlewares/async');
 const DidaticoDAO = require('../../infra/banco/DidaticoDAO');
-const s3AwsUpload = require('../../infra/s3Upload')();
-const s3AwsDownload = require('../../infra/s3Download')();
-const s3AwsDelete = require('../../infra/s3Delete')();
+const s3AwsUpload = require('../../infra/aws/s3Upload')();
+const s3AwsDownload = require('../../infra/aws/s3Download')();
+const s3AwsDelete = require('../../infra/aws/s3Delete')();
 const { getDisplayName } = require('../../utils/getDisplayName');
 const fs = require('fs');
 
 // @Didatico
 exports.getDidactic = asyncHandler(async (req, res, next) => {
-  if (req.user.tipo === 'professor') {
+  verificarProfessor(req, next, async () => {
     const ejs = {
       user: req.user,
       page_name: req.path,
@@ -21,13 +22,11 @@ exports.getDidactic = asyncHandler(async (req, res, next) => {
     ejs.listaDidatico = result;
 
     res.render('professor/perfil/didatico/didatico', ejs);
-  } else {
-    next();
-  }
+  });
 });
 
 exports.openDidactic = asyncHandler(async (req, res, next) => {
-  if (req.user.tipo === 'professor') {
+  verificarProfessor(req, next, async () => {
     const entrada = [
       { id: req.params.id },
       { id_professor: req.user.id },
@@ -56,13 +55,11 @@ exports.openDidactic = asyncHandler(async (req, res, next) => {
       ejs.paths = downloadPaths;
       res.render('professor/perfil/didatico/abrirDidatico', ejs);
     }
-  } else {
-    next();
-  }
+  });
 });
 
 exports.deleteDidactic = asyncHandler(async (req, res, next) => {
-  if (req.user.tipo === 'professor') {
+  verificarProfessor(req, next, async () => {
     const entrada = { id: req.params.id };
     const didacticPaths = new DidaticoDAO();
     const downloadFilesName = await didacticPaths.downloadPaths(entrada);
@@ -80,13 +77,11 @@ exports.deleteDidactic = asyncHandler(async (req, res, next) => {
     await didactic.delete(entrada);
 
     res.redirect('/professor/didatico');
-  } else {
-    next();
-  }
+  });
 });
 
 exports.downloadDidactic = asyncHandler(async (req, res, next) => {
-  if (req.user.tipo === 'professor') {
+  verificarProfessor(req, next, async () => {
     const ejs = {
       user: req.user,
       page_name: req.path,
@@ -103,26 +98,22 @@ exports.downloadDidactic = asyncHandler(async (req, res, next) => {
     } else {
       res.redirect(file);
     }
-  } else {
-    next();
-  }
+  });
 });
 
 exports.getCreateDidactic = asyncHandler(async (req, res, next) => {
-  if (req.user.tipo === 'professor') {
+  verificarProfessor(req, next, async () => {
     const ejs = {
       user: req.user,
       page_name: req.path,
       accountType: req.user.tipo,
     };
     res.render('professor/perfil/didatico/criarDidatico', ejs);
-  } else {
-    next();
-  }
+  });
 });
 
 exports.postCreateDidactic = asyncHandler(async (req, res, next) => {
-  if (req.user.tipo === 'professor') {
+  verificarProfessor(req, next, async () => {
     const entrada = {
       id_professor: req.user.id,
       titulo: req.body.titulo,
@@ -149,7 +140,5 @@ exports.postCreateDidactic = asyncHandler(async (req, res, next) => {
     await Promise.all(promiseList);
 
     res.redirect('/professor/didatico');
-  } else {
-    next();
-  }
+  });
 });

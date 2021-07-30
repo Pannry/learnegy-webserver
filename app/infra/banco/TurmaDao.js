@@ -99,22 +99,3 @@ TurmaDao.prototype.listTeacherClassrooms = function (input) {
 TurmaDao.prototype.applyToEnter = function (input) {
   return this.execSQL('INSERT INTO cursa SET ?', input);
 };
-
-// Aluno
-
-// TurmaDao.prototype.mostrarComentario = function (entrada) {
-//   return this.execSQL('', entrada);
-// };
-
-// TurmaDao.prototype.listaSalaAluno = function (id) {
-//   return this.execSQL(
-//     ` SELECT
-//         id_aluno, id_sala, id, nome, semestre
-//       FROM
-//         cursa, sala
-//       WHERE
-//         id_aluno = ?
-//         AND id_sala = id`,
-//     id,
-//   );
-// };
